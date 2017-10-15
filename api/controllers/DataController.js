@@ -1,26 +1,21 @@
 'use strict';
-
+const Client = require('node-rest-client').Client;
 const API_URL = 'https://itunes.apple.com/search';
-
 const REQ_TIMEOUT_ERR_MSG = {
   'error': true,
   'message': 'RequestTimeout'
 };
-
 const RES_TIMEOUT_ERR_MSG = {
   'error': true,
   'message': 'Response Timeout'
 };
 
 exports.get_data = function (req, res) {
-
-  var Client = require('node-rest-client').Client;
-    
-  var client = new Client();
-  var searchTerm = req.query.search;
+  const client = new Client();
+  const searchTerm = req.query.search;
   console.log(searchTerm);
 
-  var args = {
+  const args = {
     parameters: { entity: 'musicArtist',
       limit: 25,
       term: searchTerm
@@ -33,7 +28,7 @@ exports.get_data = function (req, res) {
     }
   };
      
-  var req = client.get(API_URL, args,
+  req = client.get(API_URL, args,
     // eslint-disable-next-line no-unused-vars
     function (data, response) {
       res.json(JSON.parse(data));
