@@ -1,9 +1,9 @@
 'use strict';
-const dataController = require('../controllers/DataController');
+const dataController = require( '../controllers/DataController' );
 
-module.exports = function(app) {
+module.exports = function( app ) {
 
   // Data Routes
-  app.route('/data')
-    .get(dataController.get_data)
+  app.route( '/data' )
+    .get( dataController.get_data );
 };
