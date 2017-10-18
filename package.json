@@ -4,7 +4,7 @@
   "description": "A simple API server",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "nodemon server.js"
   },
   "author": "John Larson",
@@ -12,10 +12,12 @@
   "devDependencies": {
     "eslint": "^4.9.0",
     "eslint-plugin-node": "^5.2.0",
+    "jest": "^21.2.1",
     "nodemon": "^1.12.1"
   },
   "dependencies": {
     "express": "^4.16.1",
-    "superagent": "^3.6.3"
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
   }
 }

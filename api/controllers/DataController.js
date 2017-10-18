@@ -1,55 +1,35 @@
 'use strict';
-const request = require('superagent');
-const API_URL = 'https://itunes.apple.com/search';
+const request = require('request-promise');
+const API_URL = 'https://itunes.apple.com/search?entity=musicArtist&limit=25&term=';
 
-const REQ_TIMEOUT_ERR_MSG = {
+const errorMessage = (status, message) => {
+  return {
   'error': true,
-  'message': 'RequestTimeout'
-};
-const RES_TIMEOUT_ERR_MSG = {
-  'error': true,
-  'message': 'Response Timeout'
-};
-
-const handleSuccess = (resp) => {
-  console.log(resp.body.text);
-};
-
-const handleFailure = (err) => {
-  console.log('Handling Error\n' + err);
-}
-
-const callAPI = async (term) => {
-  console.log('calling with term', term);
-  const data = await request
-      .get(API_URL)
-      .accept('application/json')
-      .timeout({
-      response: 5000,  // Wait 5 seconds for the server to start sending,
-      deadline: 60000, // but allow 1 minute for the file to finish loading.
-      })
-      .query({ entity: 'musicArtist' })
-      .query({ limit: 25 })
-      .query({ term: term });
-  return data;
+  'statusCode': status,
+  'message': 'The downstream service returned ' + message
+  }
 };
 
 exports.get_data = async (req, res) => {
-  const searchTerm = req.query.search;
-  console.log(searchTerm);
 
-  let replyData;
-  try {
-    replyData = await callAPI(searchTerm);
-  }
-  catch(err) {
-    res.send({
-        'error': true,
-        'message': err
-    });
-     return;
+  const searchTerm = req.query.search;
+  var options = {
+    uri: API_URL + searchTerm,
+    method: 'GET',
+    simple: true,
+    resolveWithFullResponse: true,
+    headers: {
+        'Accept': 'application/json'
+    },
+    json: true // Automatically parses the JSON string in the response
   };
-  console.log('reply data:\n', replyData.text);
-  res.send(JSON.parse(replyData.text));
-  
+
+  const rq = await request(options).then( function ( response ) {
+     res.json( response.body );
+  })
+  .catch(  function (err) {
+    res.json( errorMessage(err.statusCode, err.message) );
+  });
+
 };
+  
